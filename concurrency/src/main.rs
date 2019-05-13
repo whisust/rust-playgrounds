@@ -1,9 +1,38 @@
+#![allow(dead_code)]
+#![allow(unused_variables)]
+
 use std::thread;
 use std::time::Duration;
+use std::sync::mpsc;
 
 fn main() {
-    data_ownership();
+    channels();
 }
+
+fn channels() {
+    let (tx, rx) = mpsc::channel();
+    let tx1 = mpsc::Sender::clone(&tx);
+    thread::spawn(move || {
+       let val = vec!["this", "is", "a", "teeeeeest"];
+        for v in val {
+            tx.send(v).unwrap();
+            thread::sleep(Duration::from_millis(500));
+        }
+    });
+
+    thread::spawn(move || {
+        let val = vec!["tattaat", "meeeere", "a", "teeeeeest", "geinwier"];
+        for v in val {
+            tx1.send(v).unwrap();
+            thread::sleep(Duration::from_millis(500));
+        }
+    });
+
+    for rcv in rx {
+        println!("Got {}", rcv);
+    }
+}
+
 
 fn concurrent() {
     let handle = thread::spawn(|| {
