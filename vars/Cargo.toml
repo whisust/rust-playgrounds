@@ -1,0 +1,7 @@
+[package]
+name = "vars"
+version = "0.1.0"
+authors = ["alatr"]
+edition = "2018"
+
+[dependencies]
